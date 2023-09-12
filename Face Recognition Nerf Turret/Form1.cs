@@ -1,8 +1,11 @@
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Dnn;
+using Emgu.CV.Face;
 using Emgu.CV.Structure;
 
 namespace Face_Recognition_Nerf_Turret
@@ -82,6 +85,21 @@ namespace Face_Recognition_Nerf_Turret
             {
                 _camera.Stop();
                 _camera.Dispose();
+            }
+        }
+
+        bool isPaused = false;
+        private void btnPauseCam_Click(object sender, EventArgs e)
+        {
+            if (isPaused)
+            {
+                _camera.Start();
+                isPaused = false;
+            }
+            else
+            {
+                _camera.Stop();
+                isPaused = true;
             }
         }
     }
