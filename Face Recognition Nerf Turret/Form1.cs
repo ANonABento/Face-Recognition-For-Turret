@@ -6,5 +6,10 @@ namespace Face_Recognition_Nerf_Turret
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
