@@ -28,19 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            pictureBoxCamera = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxCamera).BeginInit();
             SuspendLayout();
+            // 
+            // pictureBoxCamera
+            // 
+            pictureBoxCamera.Location = new Point(12, 12);
+            pictureBoxCamera.Name = "pictureBoxCamera";
+            pictureBoxCamera.Size = new Size(770, 426);
+            pictureBoxCamera.TabIndex = 0;
+            pictureBoxCamera.TabStop = false;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(794, 450);
+            Controls.Add(pictureBoxCamera);
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)pictureBoxCamera).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
+
+        private PictureBox pictureBoxCamera;
     }
 }
