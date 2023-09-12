@@ -1,5 +1,8 @@
-using Emgu.CV.CvEnum;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 
 namespace Face_Recognition_Nerf_Turret
@@ -19,7 +22,7 @@ namespace Face_Recognition_Nerf_Turret
             try
             {
                 // Initialize the camera
-                _camera = new VideoCapture(1);
+                _camera = new VideoCapture(0);
 
                 // Set camera properties (frame width and height)
                 _camera.Set(Emgu.CV.CvEnum.CapProp.FrameWidth, 640);
@@ -41,8 +44,14 @@ namespace Face_Recognition_Nerf_Turret
             Mat frame = new Mat();
             _camera.Retrieve(frame);
 
-            // Perform face recognition or other image processing on 'frame'
-            // You can display the frame in your application's UI as well.
+            if (frame != null)
+            {
+                // Convert the OpenCV Mat to a .NET Bitmap for display
+                Bitmap bitmap = new Bitmap(frame.Width, frame.Height, frame.Step, System.Drawing.Imaging.PixelFormat.Format24bppRgb, frame.DataPointer);
+
+                // Display the frame in the PictureBox
+                pictureBoxCamera.Image = bitmap;
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -53,6 +62,5 @@ namespace Face_Recognition_Nerf_Turret
                 _camera.Dispose();
             }
         }
-
     }
 }
