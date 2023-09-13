@@ -22,7 +22,7 @@ namespace Face_Recognition_Nerf_Turret
         // Load the Haar Cascade Classifier for face detection
         CascadeClassifier faceCascade = new CascadeClassifier("haarcascade_frontalface_default.xml");
 
-
+        //variables for camera
         private VideoCapture _camera;
 
         private void Form1_Load(object sender, EventArgs e)
@@ -100,6 +100,7 @@ namespace Face_Recognition_Nerf_Turret
             }
         }
 
+        //end and kill camera once user closes form
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (_camera != null && _camera.IsOpened)
@@ -109,15 +110,16 @@ namespace Face_Recognition_Nerf_Turret
             }
         }
 
+        //boolean for pause state
         bool isPaused = false;
         private void btnPauseCam_Click(object sender, EventArgs e)
         {
-            if (isPaused)
+            if (isPaused) //start camera if button is pressed when paused and set bool to not paused
             {
                 _camera.Start();
                 isPaused = false;
             }
-            else
+            else //pause camera if button is pressed when not paused and set bool to paused
             {
                 _camera.Stop();
                 isPaused = true;
