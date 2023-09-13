@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Dnn;
@@ -51,6 +52,11 @@ namespace Face_Recognition_Nerf_Turret
             Mat frame = new Mat();
             _camera.Retrieve(frame);
 
+            // Define the desired center of the camera view (adjust as needed)
+            int cameraCenterX = frame.Width / 2; // X-coordinate of the center
+            int cameraCenterY = frame.Height / 2; // Y-coordinate of the center
+
+
             if (frame != null)
             {
                 // Convert the OpenCV Mat to a .NET Bitmap for display
@@ -72,6 +78,21 @@ namespace Face_Recognition_Nerf_Turret
 
                     // For example, you can draw a rectangle around detected faces
                     CvInvoke.Rectangle(frame, faceRect, new MCvScalar(0, 0, 255), 2);
+
+                    // Calculate the center of the detected face
+                    int faceX = faceRect.X + faceRect.Width / 2;  // X-coordinate of the face center
+                    int faceY = faceRect.Y + faceRect.Height / 2; // Y-coordinate of the face center
+
+                    // Calculate the differences between the face center and camera center
+                    int horizontalDifference = cameraCenterX - faceX; // Positive if the face is to the right, negative if to the left
+                    int verticalDifference = cameraCenterY - faceY;   // Positive if the face is below, negative if above
+
+                    // Log the differences for debugging
+                    Debug.WriteLine($"Horizontal Difference: {horizontalDifference}, Vertical Difference: {verticalDifference}");
+
+                    // Implement camera adjustment logic here
+                    // You should move or adjust the camera position based on the differences
+                    // For example, you can send commands to move a motorized camera mount or adjust servo angles
                 }
 
                 // Display the frame in the PictureBox
