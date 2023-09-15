@@ -1,14 +1,16 @@
+//imports
 using System;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
-using Emgu.CV.Dnn;
 using Emgu.CV.Face;
 using Emgu.CV.Structure;
+using System.Threading;
+using System.IO.Packaging;
 
+//beginning
 namespace Face_Recognition_Nerf_Turret
 {
     public partial class Form1 : Form
@@ -16,7 +18,7 @@ namespace Face_Recognition_Nerf_Turret
 
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent(); //initialize UI
         }
 
         // Load the Haar Cascade Classifier for face detection
@@ -24,6 +26,16 @@ namespace Face_Recognition_Nerf_Turret
 
         //variables for camera
         private VideoCapture _camera;
+
+        //variables for hardware
+        private DcMotor gunMotor;
+        private Servo triggerServo;
+
+        //motor values
+        double motorPower = 0.3;
+
+        //calculation variables
+        int maxDifference = 5; //max difference allowed before moving the motor
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -45,9 +57,14 @@ namespace Face_Recognition_Nerf_Turret
                 // Handle and log any exceptions
                 MessageBox.Show("Error initializing the camera: " + ex.Message);
             }
+
+            // Initialize the hardware
+            gunMotor = hardwareMap.Get<DcMotor>("REPLACE WITH NAME");
+            triggerServo = hardwareMap.Get<Servo>("REPLACE WITH NAME");
         }
 
-        private void ProcessFrame(object sender, EventArgs e)
+
+    private void ProcessFrame(object sender, EventArgs e)
         {
             Mat frame = new Mat();
             _camera.Retrieve(frame);
@@ -90,14 +107,31 @@ namespace Face_Recognition_Nerf_Turret
                     // Log the differences for debugging
                     Debug.WriteLine($"Horizontal Difference: {horizontalDifference}, Vertical Difference: {verticalDifference}");
 
-                    // Implement camera adjustment logic here
-                    // You should move or adjust the camera position based on the differences
-                    // For example, you can send commands to move a motorized camera mount or adjust servo angles
+                    //hardware calculations
+                    // Check if the max difference is greater than the max difference allowed
+                    if (Math.Abs(horizontalDifference) > maxDifference)
+                    {
+                        //change motor left or right depending on if horizontalDifference is negative or positive
+                        motorPower = (horizontalDifference > 0) ? 0.3 : -0.3;
+                    }
+                    else
+                    {
+                        //stop motor
+                        gunMotor.setPower(0.0);
+
+                        //delay the shooting to confirm that target is within sight
+                        Thread.Sleep(2000);
+                        //then shoot that motherfocker
+                        triggerServo.setPosition(1.0);
+                    }
                 }
+
+                // Set the motor power to move the Nerf gun left or right
+                gunMotor.setPower(motorPower);
+            }
 
                 // Display the frame in the PictureBox
                 pictureBoxCamera.Image = bitmap;
-            }
         }
 
         //end and kill camera once user closes form
